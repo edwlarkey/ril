@@ -1,0 +1,50 @@
+{{define "base"}}
+<!doctype html>
+<html lang='en'>
+    <head>
+        <meta charset='utf-8'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{template "title" .}} - RIL</title>
+        <link rel='shortcut icon' href='/static/img/favicon.ico' type='image/x-icon'>
+        <link rel="stylesheet" href="https://unpkg.com/picnic">
+        <link rel='stylesheet' href='/static/css/main.css'>
+    </head>
+    <body>
+        <nav>
+          <a href="/" class="brand">
+            <span class="icon-book">Read It Later</span>
+          </a>
+
+          <!-- responsive-->
+          <input id="bmenub" type="checkbox" class="show">
+          <label for="bmenub" class="burger pseudo button">&#8801;</label>
+
+          <div class="menu">
+                <a href='/'>Home</a>
+                {{if .AuthenticatedUser}}
+                    <a href='/article/create'>Add Article</a>
+                    <form class="nav" action='/user/logout' method='POST'>
+                        <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
+                        <button>Logout ({{.AuthenticatedUser.Name}})</button>
+                    </form>
+                {{else}}
+                    <a href='/user/signup'>Signup</a>
+                    <a href='/user/login'>Login</a>
+                {{end}}
+          </div>
+        </nav>
+        <main>
+        <div class="flex one">
+        <section>
+            {{with .Flash}}
+            <div class='flash '>{{.}}</div>
+            {{end}}
+            {{template "body" .}}
+        </section>
+        {{template "footer" .}}
+        </div>
+        </main>
+        <script src="/static/js/main.js" type="text/javascript"></script>
+    </body>
+</html>
+{{end}}

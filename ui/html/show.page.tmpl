@@ -1,0 +1,21 @@
+{{template "base" .}}
+
+{{define "title"}}{{.SiteTitle}}: #{{.Article.Title}}{{end}}
+
+{{define "body"}}
+    {{with .Article}}
+    <div class='article'>
+        <article>
+        <header>
+          <h2>{{.Title}}</h2>
+          <div class='metadata'>
+              <a target="_blank" href="{{.URL}}">{{.URL}}</a>
+              <br>
+              <time>Added: {{.Created | humanDate}}</time>
+          </div>
+        </header>
+        {{.Content | unescape}}
+        </article>
+    </div>
+    {{end}}
+{{end}}

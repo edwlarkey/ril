@@ -1,0 +1,21 @@
+{{template "base" .}}
+
+{{define "title"}}Add a new article{{end}}
+
+{{define "body"}}
+<form class="article" action='/article/create' method='POST'>
+    <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
+    {{with .Form}}
+        <div>
+            <label>URL:</label>
+            {{with .Errors.Get "url"}}
+                <label class='error'>{{.}}</label>
+            {{end}}
+            <input type='text' name='url' value='{{.Get "url"}}'>
+        </div>
+        <div>
+            <input type='submit' value='Add'>
+        </div>
+    {{end}}
+</form>
+{{end}}

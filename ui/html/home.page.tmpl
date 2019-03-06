@@ -1,0 +1,25 @@
+{{template "base" .}}
+
+{{define "title"}}{{.SiteTitle}} - Home{{end}}
+
+{{define "body"}}
+    <h2>Latest Articles</h2>
+    {{if .Articles}}
+     <table>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Created</th>
+        </tr>
+        {{range .Articles}}
+        <tr>
+            <td>#{{.ID}}</td>
+            <td><a href='/article/{{.ID}}'>{{.Title}}</a></td>
+            <td>{{.Created | humanDate}}</td>
+        </tr>
+        {{end}}
+    </table>
+    {{else}}
+        <p>There's nothing to see here... yet!</p>
+    {{end}}
+{{end}}
