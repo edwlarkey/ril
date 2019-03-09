@@ -8,7 +8,7 @@ import (
 	"github.com/edwlarkey/ril/pkg/models"
 )
 
-func TestArticlesModelGet(t *testing.T) {
+func TestMySQLGetArticle(t *testing.T) {
 	// Skip the test if the `-short` flag is provided when running the test.
 	if testing.Short() {
 		t.Skip("mysql: skipping integration test")
@@ -55,11 +55,11 @@ func TestArticlesModelGet(t *testing.T) {
 			// before this sub-test returns.
 
 			// Create a new instance of the ArticleModel.
-			m := ArticleModel{db}
+			m := DB{db}
 
 			// Call the ArticleModel.Get() method and check that the return value
 			// and error match the expected values for the sub-test.
-			article, err := m.Get(tt.ID)
+			article, err := m.GetArticle(tt.ID)
 
 			if err != tt.wantError {
 				t.Errorf("want %v; got %s", tt.wantError, err)

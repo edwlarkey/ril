@@ -44,9 +44,8 @@ func newTestApplication(t *testing.T) *application {
 		errorLog:      log.New(ioutil.Discard, "", 0),
 		infoLog:       log.New(ioutil.Discard, "", 0),
 		session:       session,
-		articles:      &mock.ArticleModel{},
+		db:            &mock.DB{},
 		templateCache: templateCache,
-		users:         &mock.UserModel{},
 	}
 }
 

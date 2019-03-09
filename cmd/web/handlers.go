@@ -16,7 +16,7 @@ func ping(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
-	a, err := app.articles.Latest()
+	a, err := app.db.LatestArticles()
 	if err != nil {
 		app.serverError(w, err)
 		return
@@ -34,7 +34,7 @@ func (app *application) showArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	a, err := app.articles.Get(id)
+	a, err := app.db.GetArticle(id)
 	if err == models.ErrNoRecord {
 		app.notFound(w)
 		return
@@ -90,7 +90,7 @@ func (app *application) createArticle(w http.ResponseWriter, r *http.Request) {
 
 	html := p.Sanitize(page.Body)
 
-	id, err := app.articles.Insert(page.Title, html, form.Get("url"))
+	id, err := app.db.InsertArticle(page.Title, html, form.Get("url"))
 	if err != nil {
 		app.serverError(w, err)
 		return
@@ -124,7 +124,7 @@ func (app *application) signupUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = app.users.Insert(form.Get("name"), form.Get("email"), form.Get("password"))
+	err = app.db.InsertUser(form.Get("name"), form.Get("email"), form.Get("password"))
 	if err == models.ErrDuplicateEmail {
 		form.Errors.Add("email", "Address is already in use")
 		app.render(w, r, "signup.page.tmpl", &templateData{Form: form})
@@ -154,7 +154,7 @@ func (app *application) loginUser(w http.ResponseWriter, r *http.Request) {
 
 	form := forms.New(r.PostForm)
 
-	id, err := app.users.Authenticate(form.Get("email"), form.Get("password"))
+	id, err := app.db.AuthenticateUser(form.Get("email"), form.Get("password"))
 	if err == models.ErrInvalidCredentials {
 		form.Errors.Add("generic", "Email or Password is incorrect")
 		app.render(w, r, "login.page.tmpl", &templateData{Form: form})

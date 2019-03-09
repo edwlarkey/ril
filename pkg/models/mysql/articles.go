@@ -6,12 +6,8 @@ import (
 	"github.com/edwlarkey/ril/pkg/models"
 )
 
-type ArticleModel struct {
-	DB *sql.DB
-}
-
 // Insert adds an article to the DB
-func (m *ArticleModel) Insert(title, content, url string) (int, error) {
+func (m *DB) InsertArticle(title, content, url string) (int, error) {
 	stmt := `INSERT INTO articles (title, content, url, created, completed)
     VALUES(?, ?, ?, UTC_TIMESTAMP(), 0)`
 
@@ -29,7 +25,7 @@ func (m *ArticleModel) Insert(title, content, url string) (int, error) {
 }
 
 // Get gets a single article from the DB
-func (m *ArticleModel) Get(id int) (*models.Article, error) {
+func (m *DB) GetArticle(id int) (*models.Article, error) {
 	stmt := `SELECT id, title, content, url, created, completed FROM articles
     WHERE id = ?`
 
@@ -48,7 +44,7 @@ func (m *ArticleModel) Get(id int) (*models.Article, error) {
 }
 
 // Latest gets the 10 most recent articles from the DB
-func (m *ArticleModel) Latest() ([]*models.Article, error) {
+func (m *DB) LatestArticles() ([]*models.Article, error) {
 	stmt := `SELECT id, title, content, url, created, completed FROM articles
     WHERE completed != 1 ORDER BY created DESC LIMIT 10`
 

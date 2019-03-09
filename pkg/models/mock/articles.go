@@ -15,13 +15,11 @@ var mockArticle = &models.Article{
 	Completed: 0,
 }
 
-type ArticleModel struct{}
-
-func (m *ArticleModel) Insert(title, content, expires string) (int, error) {
+func (m *DB) InsertArticle(title, content, expires string) (int, error) {
 	return 2, nil
 }
 
-func (m *ArticleModel) Get(id int) (*models.Article, error) {
+func (m *DB) GetArticle(id int) (*models.Article, error) {
 	switch id {
 	case 1:
 		return mockArticle, nil
@@ -30,6 +28,6 @@ func (m *ArticleModel) Get(id int) (*models.Article, error) {
 	}
 }
 
-func (m *ArticleModel) Latest() ([]*models.Article, error) {
+func (m *DB) LatestArticles() ([]*models.Article, error) {
 	return []*models.Article{mockArticle}, nil
 }

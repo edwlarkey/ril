@@ -8,7 +8,7 @@ import (
 	"github.com/edwlarkey/ril/pkg/models"
 )
 
-func TestUserModelGet(t *testing.T) {
+func TestMySQLGetUser(t *testing.T) {
 	// Skip the test if the `-short` flag is provided when running the test.
 	if testing.Short() {
 		t.Skip("mysql: skipping integration test")
@@ -52,12 +52,12 @@ func TestUserModelGet(t *testing.T) {
 			// call to the teardown function, so it is always run immediately
 			// before this sub-test returns.
 
-			// Create a new instance of the UserModel.
-			m := UserModel{db}
+			// Create a new instance of the DB.
+			m := DB{db}
 
-			// Call the UserModel.Get() method and check that the return value
+			// Call the DB.Get() method and check that the return value
 			// and error match the expected values for the sub-test.
-			user, err := m.Get(tt.userID)
+			user, err := m.GetUser(tt.userID)
 
 			if err != tt.wantError {
 				t.Errorf("want %v; got %s", tt.wantError, err)

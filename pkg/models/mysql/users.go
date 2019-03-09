@@ -9,11 +9,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UserModel struct {
-	DB *sql.DB
-}
-
-func (m *UserModel) Insert(name, email, password string) error {
+func (m *DB) InsertUser(name, email, password string) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 12)
 	if err != nil {
 		return err
@@ -33,7 +29,7 @@ func (m *UserModel) Insert(name, email, password string) error {
 	return err
 }
 
-func (m *UserModel) Authenticate(email, password string) (int, error) {
+func (m *DB) AuthenticateUser(email, password string) (int, error) {
 	var id int
 	var hashedPassword []byte
 	row := m.DB.QueryRow("SELECT id, hashed_password FROM users WHERE email = ?", email)
@@ -54,7 +50,7 @@ func (m *UserModel) Authenticate(email, password string) (int, error) {
 	return id, nil
 }
 
-func (m *UserModel) Get(id int) (*models.User, error) {
+func (m *DB) GetUser(id int) (*models.User, error) {
 	s := &models.User{}
 
 	stmt := `SELECT id, name, email, created FROM users WHERE id = ?`

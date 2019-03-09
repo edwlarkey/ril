@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
 	"html/template"
 	"log"
@@ -23,17 +22,17 @@ type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
 	session  *sessions.Session
-	articles interface {
-		Insert(string, string, string) (int, error)
-		Get(int) (*models.Article, error)
-		Latest() ([]*models.Article, error)
+	db       interface {
+		Connect(string) error
+		Close()
+		InsertArticle(string, string, string) (int, error)
+		GetArticle(int) (*models.Article, error)
+		LatestArticles() ([]*models.Article, error)
+		InsertUser(string, string, string) error
+		AuthenticateUser(string, string) (int, error)
+		GetUser(int) (*models.User, error)
 	}
 	templateCache map[string]*template.Template
-	users         interface {
-		Insert(string, string, string) error
-		Authenticate(string, string) (int, error)
-		Get(int) (*models.User, error)
-	}
 }
 
 func main() {
@@ -44,13 +43,6 @@ func main() {
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.LUTC|log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stdout, "ERROR\t", log.LUTC|log.Ldate|log.Ltime|log.Lshortfile)
-
-	db, err := openDB(*dsn)
-	if err != nil {
-		errorLog.Fatal(err)
-	}
-
-	defer db.Close()
 
 	templateCache, err := newTemplateCache("./ui/html/")
 	if err != nil {
@@ -64,11 +56,20 @@ func main() {
 		errorLog:      errorLog,
 		infoLog:       infoLog,
 		session:       session,
-		articles:      &mysql.ArticleModel{DB: db},
+		db:            &mysql.DB{},
 		templateCache: templateCache,
-		users:         &mysql.UserModel{DB: db},
 	}
 
+	// Connect to the DB
+	err = app.db.Connect(*dsn)
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+
+	// Defer closing our DB connection pool
+	defer app.db.Close()
+
+	// Set up http server, including app routes
 	srv := &http.Server{
 		Addr:         *addr,
 		ErrorLog:     errorLog,
@@ -78,18 +79,8 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 
+	// Start the http server
 	infoLog.Printf("Starting server on %s", *addr)
 	err = srv.ListenAndServe()
 	errorLog.Fatal(err)
-}
-
-func openDB(dsn string) (*sql.DB, error) {
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
-		return nil, err
-	}
-	if err = db.Ping(); err != nil {
-		return nil, err
-	}
-	return db, nil
 }
