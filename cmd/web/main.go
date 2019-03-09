@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/edwlarkey/ril/pkg/models"
-	"github.com/edwlarkey/ril/pkg/models/mysql"
+	"github.com/edwlarkey/ril/pkg/mysql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golangcollege/sessions"
 )

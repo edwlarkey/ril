@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/edwlarkey/ril/pkg/models/mock"
+	"github.com/edwlarkey/ril/pkg/mock"
 
 	"github.com/golangcollege/sessions"
 )
