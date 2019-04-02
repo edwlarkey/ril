@@ -7,6 +7,7 @@ require (
 	github.com/antchfx/goreadly v0.0.0-20190301083720-acd01641e2dd
 	github.com/antchfx/htmlquery v1.0.0 // indirect
 	github.com/antchfx/xpath v0.0.0-20190129040759-c8489ed3251e // indirect
+	github.com/asdine/storm v2.1.2+incompatible
 	github.com/bmizerany/pat v0.0.0-20170815010413-6226ea591a40
 	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
 	github.com/containerd/continuity v0.0.0-20181203112020-004b46473808 // indirect
@@ -23,6 +24,7 @@ require (
 	github.com/ory/dockertest v3.3.4+incompatible
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/sirupsen/logrus v1.3.0 // indirect
+	go.etcd.io/bbolt v1.3.2 // indirect
 	golang.org/x/crypto v0.0.0-20190228161510-8dd112bcdc25
 	golang.org/x/text v0.3.0 // indirect
 )

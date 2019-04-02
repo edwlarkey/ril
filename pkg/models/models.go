@@ -12,7 +12,7 @@ var (
 )
 
 type Article struct {
-	ID        int
+	ID        int `storm:"id,increment"`
 	Title     string
 	Content   string
 	URL       string
@@ -21,9 +21,9 @@ type Article struct {
 }
 
 type User struct {
-	ID             int
+	ID             int `storm:"id,increment"`
 	Name           string
-	Email          string
+	Email          string `storm:"index"`
 	HashedPassword []byte
 	Created        time.Time
 }

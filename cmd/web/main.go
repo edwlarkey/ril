@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/edwlarkey/ril/pkg/bolt"
 	"github.com/edwlarkey/ril/pkg/models"
 	"github.com/edwlarkey/ril/pkg/mysql"
 	_ "github.com/go-sql-driver/mysql"
@@ -37,7 +38,8 @@ type application struct {
 
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
-	dsn := flag.String("dsn", "ril:password@/ril?parseTime=true", "MySQL data source name")
+	dsn := flag.String("dsn", "ril.db", "Data source name")
+	db_type := flag.String("db-type", "bolt", "DB type [bolt, mysql]")
 	secret := flag.String("secret", "s6Ndh+pPbnzHbS*+9Pk8qGWhTzbpa@ge", "Secret key")
 	flag.Parse()
 
@@ -56,8 +58,14 @@ func main() {
 		errorLog:      errorLog,
 		infoLog:       infoLog,
 		session:       session,
-		db:            &mysql.DB{},
 		templateCache: templateCache,
+	}
+
+	switch *db_type {
+	case "bolt":
+		app.db = &bolt.DB{}
+	case "mysql":
+		app.db = &mysql.DB{}
 	}
 
 	// Connect to the DB
