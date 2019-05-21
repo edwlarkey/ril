@@ -3,6 +3,7 @@ module github.com/edwlarkey/ril
 go 1.12
 
 require (
+	github.com/BurntSushi/toml v0.3.1
 	github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5 // indirect
 	github.com/antchfx/goreadly v0.0.0-20190301083720-acd01641e2dd
 	github.com/antchfx/htmlquery v1.0.0 // indirect

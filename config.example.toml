@@ -1,0 +1,11 @@
+[database]
+server = "127.0.0.1"
+port = "3306"
+database = "ril"
+user = "ril"
+password = "password"
+
+[web]
+ip = ""
+port = "4000"
+secret = "s6Ndh+pPbnzHbS*+9Pk8qGWhTzbpa@ge"

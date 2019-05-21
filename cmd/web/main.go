@@ -2,12 +2,15 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/BurntSushi/toml"
+	"github.com/edwlarkey/ril/pkg/config"
 	"github.com/edwlarkey/ril/pkg/models"
 	"github.com/edwlarkey/ril/pkg/mysql"
 	_ "github.com/go-sql-driver/mysql"
@@ -36,10 +39,16 @@ type application struct {
 }
 
 func main() {
-	addr := flag.String("addr", ":4000", "HTTP network address")
-	dsn := flag.String("dsn", "ril:password@/ril?parseTime=true", "MySQL data source name")
-	secret := flag.String("secret", "s6Ndh+pPbnzHbS*+9Pk8qGWhTzbpa@ge", "Secret key")
+	configFile := flag.String("config", "./config.toml", "Config file")
 	flag.Parse()
+
+	var conf config.Config
+	if _, err := toml.DecodeFile(*configFile, &conf); err != nil {
+		fmt.Println(err)
+	}
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", conf.Database.User, conf.Database.Password, conf.Database.Server, conf.Database.Port, conf.Database.Database)
+	addr := fmt.Sprintf("%s:%s", conf.Web.IP, conf.Web.Port)
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.LUTC|log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stdout, "ERROR\t", log.LUTC|log.Ldate|log.Ltime|log.Lshortfile)
@@ -49,7 +58,7 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
-	session := sessions.New([]byte(*secret))
+	session := sessions.New([]byte(conf.Web.Secret))
 	session.Lifetime = 12 * time.Hour
 
 	app := &application{
@@ -61,7 +70,7 @@ func main() {
 	}
 
 	// Connect to the DB
-	err = app.db.Connect(*dsn)
+	err = app.db.Connect(dsn)
 	if err != nil {
 		errorLog.Fatal(err)
 	}
@@ -71,7 +80,7 @@ func main() {
 
 	// Set up http server, including app routes
 	srv := &http.Server{
-		Addr:         *addr,
+		Addr:         addr,
 		ErrorLog:     errorLog,
 		Handler:      app.routes(),
 		IdleTimeout:  time.Minute,
@@ -80,7 +89,7 @@ func main() {
 	}
 
 	// Start the http server
-	infoLog.Printf("Starting server on %s", *addr)
+	infoLog.Printf("Starting server on %s", addr)
 	err = srv.ListenAndServe()
 	errorLog.Fatal(err)
 }
